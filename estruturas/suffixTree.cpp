@@ -41,10 +41,10 @@ struct SuffixTree {
         return;
       }
 
-      int mid = split(ptr); // quebra a aresta atual
+      int mid = split(ptr);
       int leaf = sz++;
-      t.emplace_back(pos, str.size(), mid); // adiciona o novo no, representando
-      t[mid][str[pos]] = leaf;     // o caminho onde o prefixo divergiu
+      t.emplace_back(pos, str.size(), mid);
+      t[mid][str[pos]] = leaf;    
       ptr.v = getLink(mid);
       ptr.pos = t[ptr.v].len();
       if (!mid) break;
@@ -55,11 +55,11 @@ struct SuffixTree {
     while (l < r) {
       if (st.pos == t[st.v].len()) {
         st = state(t[st.v][str[l]], 0);
-        if (st.v == -1) return st;  // Aresta usando str[l] não existe no nó st.v
+        if (st.v == -1) return st; 
       }
       else {
-        if (str[t[st.v].l + st.pos] != str[l]) return state(-1, -1); // sufixo não forma prefixo
-        if (r - l < t[st.v].len() - st.pos) return state(st.v, st.pos + r - l); // se o que eu quero estender é menor do que falta pra completar a aresta, avança na aresta
+        if (str[t[st.v].l + st.pos] != str[l]) return state(-1, -1);
+        if (r - l < t[st.v].len() - st.pos) return state(st.v, st.pos + r - l);
         l += t[st.v].len() - st.pos;
         st.pos = t[st.v].len();
       }
@@ -85,19 +85,9 @@ struct SuffixTree {
   }
 
   int getLink(int v) {
-    if (t[v].link != -1) return t[v].link; // link já calculado
-    if (t[v].par == -1) return 0; // se não existe link, o link é a raíz
+    if (t[v].link != -1) return t[v].link;
+    if (t[v].par == -1) return 0;
     int to = getLink(t[v].par);
     return t[v].link = split(go(state(to, t[to].len()), t[v].l + (t[v].par == 0), t[v].r));
   }
 };
-
-int main() {
-  string s;
-  cin >> s;
-  s += "$";
-  SuffixTree st(s);
-  cout << st.sz << endl;
-  return 0;
-}
-
