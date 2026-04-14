@@ -115,17 +115,22 @@ int main() {
   int t;
   cin >> t;
   for (int i = 0;i < t;i++) {
-    if (i) cout << endl;
     string s;
     cin >> s;
+    int n = s.length();
     SuffixArray sa(s);
     vi lcp = lcp_construction(s, sa.array);
     int pos = 0;
     for (;sa.array[pos] != 0;pos++);
-    pos--;
-    int k = sa.size() - sa.array[pos + 1] - (pos > 0 ? lcp[pos - 1] : 0);
-    int n = s.length();
-    cout << (n % k == 0 ? k : n) << endl;
+    int len = n;
+    int k = 0;
+    for (int j = pos - 2;j >= 0 and len >= 0;j--) {
+      len = min(len, lcp[j]);
+      if (n - sa.array[j + 1] == len) {
+        k = max(k, len);
+      }
+    }
+    cout << n - k << endl;
   }
   return 0;
 }

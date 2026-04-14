@@ -115,26 +115,19 @@ int main() {
   int t;
   cin >> t;
   for (int i = 0;i < t;i++) {
-    if (i) cout << endl;
     string s;
     cin >> s;
     int n = s.size();
     s += '$';
     SuffixTree st(s);
-    int at = 0, pos = 0;
-    stack<int> ls;
-    while (pos < n) {
-      at = st[at][s[pos]];
-      pos += st[at].len();
-      ls.push(pos);
+    SuffixTree::state at(0, 0);
+    int k = 0;
+    for (int i = 0;i < n - 1;i++) {
+      at = st.go(at, i, i + 1);
+      auto suf = st.go(at, n, n + 1);
+      if (suf.v != -1) k = i + 1;
     }
-    ls.pop();
-    int p = n;
-    if (!ls.empty()) {
-      int k = n - ls.top();
-      if (n % k == 0) p = k;
-    }
-    cout << p << endl;
+    cout << n - k << endl;
   }
   return 0;
 }
