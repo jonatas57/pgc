@@ -22,9 +22,10 @@ struct SuffixAutomaton {
   };
 
   vector<Node> nodes;
+  vector<long long> countStrings;
   int size;
 
-  SuffixAutomaton(string s) : nodes(2 * s.length()), size(1) {
+  SuffixAutomaton(string s) : nodes(2 * s.length()), size(1), countStrings(2 * s.length(), -1) {
     int last = 0;
     for (char c : s) {
       Node& current = newState(nodes[last].length + 1);
@@ -56,7 +57,7 @@ struct SuffixAutomaton {
   }
 
   Node& newState(int length, int link = -1) {
-  nodes[size].id = size;
+    nodes[size].id = size;
     nodes[size].length = length;
     nodes[size].link = link;
     nodes[size].endpos = length - 1;
@@ -74,12 +75,13 @@ struct SuffixAutomaton {
     return nodes[index];
   }
 
-  void toGraph() {
-    for (int i = 0; i < size; i++) {
-      for (auto& [c, j] : nodes[i].next) {
-        cout << i << " " << j << " " << c << endl;
+  long long countPaths(int u) {
+    if (countStrings[u] == -1) {
+      countStrings[u] = u > 0;
+      for (auto [ch, v] : nodes[u].next) {
+        countStrings[u] += countPaths(v);
       }
-      cout << i << " --> " << nodes[i].link << endl;
     }
-  }
+    return countStrings[u];
+  };
 };
