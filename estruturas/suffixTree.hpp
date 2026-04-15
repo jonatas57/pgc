@@ -1,4 +1,3 @@
-#include <iostream>
 #include <map>
 #include <vector>
 
@@ -44,7 +43,7 @@ struct SuffixTree {
       int mid = split(ptr);
       int leaf = sz++;
       t.emplace_back(pos, str.size(), mid);
-      t[mid][str[pos]] = leaf;    
+      t[mid][str[pos]] = leaf;
       ptr.v = getLink(mid);
       ptr.pos = t[ptr.v].len();
       if (!mid) break;
@@ -55,7 +54,7 @@ struct SuffixTree {
     while (l < r) {
       if (st.pos == t[st.v].len()) {
         st = state(t[st.v][str[l]], 0);
-        if (st.v == -1) return st; 
+        if (st.v == -1) return st;
       }
       else {
         if (str[t[st.v].l + st.pos] != str[l]) return state(-1, -1);
@@ -89,5 +88,9 @@ struct SuffixTree {
     if (t[v].par == -1) return 0;
     int to = getLink(t[v].par);
     return t[v].link = split(go(state(to, t[to].len()), t[v].l + (t[v].par == 0), t[v].r));
+  }
+
+  node& operator[](int v) {
+    return t[v];
   }
 };
