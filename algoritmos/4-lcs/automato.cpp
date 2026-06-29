@@ -38,8 +38,17 @@ int longestCommonSubstring(SuffixAutomaton& automaton, string& t) {
 int main() {
   string s, t;
   cin >> s >> t;
+  auto start = chrono::high_resolution_clock::now();
   SuffixAutomaton automaton(s);
-  cout << longestCommonSubstring(automaton, t) << endl;
+  auto end = chrono::high_resolution_clock::now();
+  cerr << chrono::duration_cast<chrono::nanoseconds>(end - start).count() << endl;
+
+  auto start2 = chrono::high_resolution_clock::now();
+  int ans = longestCommonSubstring(automaton, t);
+  auto end2 = chrono::high_resolution_clock::now();
+  cerr << chrono::duration_cast<chrono::nanoseconds>(end2 - start2).count() << endl;
+
+  cout << ans << endl;
   return 0;
 }
 

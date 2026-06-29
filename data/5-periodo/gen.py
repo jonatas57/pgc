@@ -1,21 +1,26 @@
 import random
 import sys
 
-base_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+SEED = int(sys.argv[1])
+ALPHABET = sys.argv[2]
+QUERY_COUNT = int(sys.argv[3])
+MIN_LEN = int(sys.argv[4])
+MAX_LEN = int(sys.argv[5])
+MIN_CYCLE_LEN = int(sys.argv[6])
+MAX_CYCLE_LEN = int(sys.argv[7])
 
-if len(sys.argv) > 1:
-    try:
-        S = base_chars[:int(sys.argv[1])]
-    except ValueError:
-        S = sys.argv[1]
-else:
-    S = base_chars
-length = int(sys.argv[2]) if len(sys.argv) > 2 else 10
-rep = int(sys.argv[3]) if len(sys.argv) > 3 else 1
+def randomString(alphabet, length):
+    return ''.join(random.choice(alphabet) for _ in range(length))
 
-def randomString(n):
-    return ''.join(random.choice(S) for _ in range(n))
+def main():
+    print(QUERY_COUNT)
+    for _ in range(QUERY_COUNT):
+        cycle_len = random.randint(MIN_CYCLE_LEN, MAX_CYCLE_LEN)
+        cycle = randomString(ALPHABET, cycle_len)
+        sLength = random.randint(MIN_LEN, MAX_LEN)
+        s = ''.join(cycle[i % cycle_len] for i in range(sLength))
+        print(s)
 
-s = randomString(length)
-text = s * rep
-print(text)
+if __name__ == "__main__":
+    random.seed(SEED)
+    main()

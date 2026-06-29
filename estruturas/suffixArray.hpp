@@ -9,7 +9,7 @@ struct SuffixArray {
 
   SuffixArray(string& s) : sa(s.size() + 1), str(s) {
     int n = s.size() + 1;
-    vector<int> arr(n);
+    vector<int> arr(n + 3, 0);
     transform(s.begin(), s.end(), arr.begin(), [](char c) { return (int)c; });
     suffixArray(arr, sa, n, 128);
   }
@@ -98,7 +98,10 @@ struct SuffixArray {
     }
   }
 
-  int& operator[](int i) { return sa[i]; }
+  int& operator[](int i) {
+    if (i < 0 or i >= (int)sa.size()) throw out_of_range("Index out of range");
+    return sa[i];
+  }
 
   int size() { return (int)sa.size() - 1; }
 

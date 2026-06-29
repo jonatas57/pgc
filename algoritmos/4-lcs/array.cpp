@@ -10,21 +10,24 @@ int main() {
   cin >> a >> b;
   string s = a + '#' + b;
   int n = s.size();
+
+  auto start = chrono::high_resolution_clock::now();
   SuffixArray sa(s);
-  vector<int> rank(n);
-  for (int i = 0; i < n; i++) rank[sa[i]] = i;
-  int k = 0;
+  auto end = chrono::high_resolution_clock::now();
+  cerr << chrono::duration_cast<chrono::nanoseconds>(end - start).count() << endl;
+
+  sa.buildLCP();
+
+  auto start2 = chrono::high_resolution_clock::now();
   int ans = 0;
-  for (int i = 0; i < n; i++) {
-    if (rank[i] == n - 1) {
-      k = 0;
-      continue;
+  for (int i = 1; i < n; i++) {
+    if ((sa[i] < a.size()) != (sa[i + 1] < a.size())) {
+      ans = max(ans, sa.lcp[i - 1]);
     }
-    int j = sa[rank[i] + 1];
-    while (i + k < n && j + k < n && s[i + k] == s[j + k]) k++;
-    if ((i < a.size()) != (j < a.size())) ans = max(ans, k);
-    if (k) k--;
   }
+  auto end2 = chrono::high_resolution_clock::now();
+  cerr << chrono::duration_cast<chrono::nanoseconds>(end2 - start2).count() << endl;
+
   cout << ans << endl;
   return 0;
 }

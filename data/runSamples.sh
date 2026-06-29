@@ -1,5 +1,4 @@
-# get directories of all samples
-SAMPLES_DIR=$(ls -d */)
+SAMPLES_DIR=(*/)
 
 structs=(
   "array"
@@ -7,7 +6,15 @@ structs=(
   "automato"
 )
 
-for SAMPLE_DIR in $SAMPLES_DIR; do
+if [ -n "$1" ]; then
+  SAMPLES_DIR=("${SAMPLES_DIR[$(( $1 - 1 ))]}")
+fi
+
+if [ -n "$2" ]; then
+  structs=("$2")
+fi
+
+for SAMPLE_DIR in "${SAMPLES_DIR[@]}"; do
   SAMPLE_DIR=${SAMPLE_DIR%/}
   echo "Running sample: $SAMPLE_DIR"
   for STRUCT in "${structs[@]}"; do
@@ -22,15 +29,23 @@ for SAMPLE_DIR in $SAMPLES_DIR; do
     fi
 
     echo "$STRUCT"
-    for INPUT_FILE in $(ls ./$SAMPLE_DIR/samples/*.in); do
-      OUTPUT_FILE="${INPUT_FILE%.in}.out"
+    if [ ! -d "$SAMPLE_DIR/output/$STRUCT" ]; then
+      mkdir -p "$SAMPLE_DIR/output/$STRUCT"
+    fi
+    for INPUT_FILE in $(ls ./$SAMPLE_DIR/samples/*.txt); do
+      INPUT_BASENAME=$(basename "$INPUT_FILE" .txt)
+      OUTPUT_FILE_NAME="$SAMPLE_DIR/output/$STRUCT/$INPUT_BASENAME"
 
-      perfResult=$( { gtime -v $PROGRAM_FILE < "$INPUT_FILE" > "$OUTPUT_FILE"; } 2>&1 )
-      
-      totalTime=$(echo "$perfResult" | grep "User time (seconds)" | awk '{print $4}')
-      maxMemory=$(echo "$perfResult" | grep "Maximum resident set size (kbytes)" | awk '{print $6}')
+      for i in {0..9}; do
+        $PROGRAM_FILE < "$INPUT_FILE" > /dev/null > "$OUTPUT_FILE_NAME-${i}.out" 2> "$OUTPUT_FILE_NAME-${i}.perf"
+      done
 
-      echo "$(basename "$INPUT_FILE"): ${totalTime}s, ${maxMemory}KB"
+      # perfResult=$( { gtime -v $PROGRAM_FILE < "$INPUT_FILE" > "$OUTPUT_FILE"; } 2>&1 )
+      #
+      # totalTime=$(echo "$perfResult" | grep "User time (seconds)" | awk '{print $4}')
+      # maxMemory=$(echo "$perfResult" | grep "Maximum resident set size (kbytes)" | awk '{print $6}')
+      #
+      # echo "$(basename "$INPUT_FILE"): ${totalTime}s, ${maxMemory}KB"
     done
   done
 done

@@ -30,14 +30,25 @@ bool isSubstring(SuffixArray& arr, const string& pattern) {
 }
  
 int main() {
+  ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
+
   string s;
   int n;
-  cin >> s >> n;
+  getline(cin, s);
+  cin >> n;
+  getchar();
+  auto start = chrono::high_resolution_clock::now();
   SuffixArray arr(s);
+  auto end = chrono::high_resolution_clock::now();
+  cerr << chrono::duration_cast<chrono::nanoseconds>(end - start).count() << endl;
   for (int i = 0; i < n; ++i) {
     string pattern;
-    cin >> pattern;
-    cout << (isSubstring(arr, pattern) ? "YES" : "NO") << endl;
+    getline(cin, pattern);
+    auto itstart = chrono::high_resolution_clock::now();
+    bool ok = isSubstring(arr, pattern);
+    auto itend = chrono::high_resolution_clock::now();
+    cerr << chrono::duration_cast<chrono::nanoseconds>(itend - itstart).count() << endl;
+    cout << (ok ? "YES" : "NO") << endl;
   }
   return 0;
 }

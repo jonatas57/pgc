@@ -8,11 +8,17 @@ int main() {
   
   int t;
   cin >> t;
+  getchar();
   for (int i = 0;i < t;i++) {
-    if (i) cout << endl;
     string s;
-    cin >> s;
+    getline(cin, s);
+
+    auto start = chrono::high_resolution_clock::now();
     SuffixAutomaton sa(s);
+    auto end = chrono::high_resolution_clock::now();
+    cerr << chrono::duration_cast<chrono::nanoseconds>(end - start).count() << endl;
+
+    auto start2 = chrono::high_resolution_clock::now();
     int n = s.length();
     int at = 0;
     for (char c : s) at = sa[at][c];
@@ -24,6 +30,9 @@ int main() {
         ok = false;
       }
     }
+    auto end2 = chrono::high_resolution_clock::now();
+    cerr << chrono::duration_cast<chrono::nanoseconds>(end2 - start2).count() << endl;
+
     cout << (ok ? k : n) << endl;
   }
   return 0;

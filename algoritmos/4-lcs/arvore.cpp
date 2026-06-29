@@ -7,18 +7,22 @@ using namespace std;
 const char WORDSEP = '#';
 
 int lcs(string a, string b) {
+  auto start = chrono::high_resolution_clock::now();
   SuffixTree st(a + WORDSEP + b);
+  auto end = chrono::high_resolution_clock::now();
+  cerr << chrono::duration_cast<chrono::nanoseconds>(end - start).count() << endl;
+
+  auto start2 = chrono::high_resolution_clock::now();
   queue<pair<int, int>> q;
   q.emplace(0, 0);
   vector<int> len(st.t.size()), cnt(st.t.size()), ord;
-  int u, l;
   while (!q.empty()) {
-    tie(u, l) = q.front();
+    auto [u, l] = q.front();
     q.pop();
     ord.push_back(u);
     len[u] = l;
-    for (auto& p : st[u].next) {
-      q.emplace(p.second, l + st[p.second].len());
+    for (auto& [ch, v] : st[u].next) {
+      q.emplace(v, l + st[v].len());
     }
   }
   int ans = 0;
@@ -37,6 +41,8 @@ int lcs(string a, string b) {
       ans = max(ans, len[u]);
     }
   }
+  auto end2 = chrono::high_resolution_clock::now();
+  cerr << chrono::duration_cast<chrono::nanoseconds>(end2 - start2).count() << endl;
   return ans;
 }
 

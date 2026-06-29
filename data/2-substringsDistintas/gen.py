@@ -1,18 +1,20 @@
 import random
 import sys
 
-base_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+SEED = int(sys.argv[1])
+ALPHABET = sys.argv[2]
+MIN_LENGTH = int(sys.argv[3])
+MAX_LENGTH = int(sys.argv[4])
 
-if len(sys.argv) > 1:
-    try:
-        S = base_chars[:int(sys.argv[1])]
-    except ValueError:
-        S = sys.argv[1]
-else:
-    S = base_chars
-length = int(sys.argv[2]) if len(sys.argv) > 2 else 10
+def randomString(alphabet, n):
+    return ''.join(random.choice(alphabet) for _ in range(n))
 
-def randomString(n):
-    return ''.join(random.choice(S) for _ in range(n))
+def main():
+    sLength = random.randint(MIN_LENGTH, MAX_LENGTH)
+    s = randomString(ALPHABET, sLength)
+    print(s)
 
-print(randomString(length))
+if __name__ == "__main__":
+    if SEED != 0:
+        random.seed(SEED)
+    main()

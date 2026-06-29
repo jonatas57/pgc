@@ -21,8 +21,17 @@ int main() {
   ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
  
   string s;
-  cin >> s;
+  getline(cin, s);
+  auto start = chrono::high_resolution_clock::now();
   SuffixAutomaton sa(s);
-  cout << countDistinctSubstrings(sa) << endl;
+  auto end = chrono::high_resolution_clock::now();
+  cerr << chrono::duration_cast<chrono::nanoseconds>(end - start).count() << endl;
+
+  auto start2 = chrono::high_resolution_clock::now();
+  long long ans = countDistinctSubstrings(sa);
+  auto end2 = chrono::high_resolution_clock::now();
+  cerr << chrono::duration_cast<chrono::nanoseconds>(end2 - start2).count() << endl;
+
+  cout << ans << endl;
   return 0;
 }

@@ -26,15 +26,25 @@ int main() {
   string s;
   int q, k;
   cin >> s >> q;
+  auto start = chrono::high_resolution_clock::now();
   SuffixArray sa(s);
+  auto end = chrono::high_resolution_clock::now();
+  cerr << chrono::duration_cast<chrono::nanoseconds>(end - start).count() << endl;
+
   sa.buildLCP();
   auto& lcp = sa.lcp;
 
-  int start, length;
+  int st, length;
   for (int i = 0;i < q;i++) {
     cin >> k;
-    tie(start, length) = kth_substring(sa, lcp, k);
-    cout << s.substr(start, length) << endl;
+
+    auto itstart = chrono::high_resolution_clock::now();
+    tie(st, length) = kth_substring(sa, lcp, k);
+    auto itend = chrono::high_resolution_clock::now();
+    cerr << chrono::duration_cast<chrono::nanoseconds>(itend - itstart).count() << endl;
+
+    string ans = s.substr(st, length);
+    cout << ans << endl;
   }
   return 0;
 }
