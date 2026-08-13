@@ -37,7 +37,8 @@ int longestCommonSubstring(SuffixAutomaton& automaton, string& t) {
 
 int main() {
   string s, t;
-  cin >> s >> t;
+  getline(cin, s);
+  getline(cin, t);
   auto start = chrono::high_resolution_clock::now();
   SuffixAutomaton automaton(s);
   auto end = chrono::high_resolution_clock::now();

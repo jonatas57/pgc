@@ -2,7 +2,7 @@
 
 sampleFolder=./samples
 
-# params: seed alfabeto, tamanho min, tamanho max, qtd queries, min query size, max query size
+# params: seed, alfabeto, tamanho, qtd query, tamanho query 
 
 python3 gen.py 1 ab 10000 100 10 > $sampleFolder/in01.txt
 python3 gen.py 2 ab 10000 100 1000 > $sampleFolder/in02.txt

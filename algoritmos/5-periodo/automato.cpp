@@ -3,6 +3,19 @@
 
 using namespace std;
 
+int getPeriod(SuffixAutomaton& sa, string& s) {
+  int n = s.length();
+  int border = 0;
+  int at = 0;
+  for (auto& c : s) {
+    at = sa[at][c];
+    if (sa[at].terminal and sa[at].length < n) {
+      border = max(border, sa[at].length);
+    }
+  }
+  return n - border;
+}
+
 int main() {
   ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL);
   
@@ -19,21 +32,11 @@ int main() {
     cerr << chrono::duration_cast<chrono::nanoseconds>(end - start).count() << endl;
 
     auto start2 = chrono::high_resolution_clock::now();
-    int n = s.length();
-    int at = 0;
-    for (char c : s) at = sa[at][c];
-    int k = sa[at].length - sa[sa[at].link].length;
-    bool ok = n % k == 0;
-    for (int x = at;sa[x].length > k and ok;x = sa[x].link) {
-      int y = sa[x].link;
-      if (sa[x].length - sa[y].length != k) {
-        ok = false;
-      }
-    }
+    int ans = getPeriod(sa, s);
     auto end2 = chrono::high_resolution_clock::now();
     cerr << chrono::duration_cast<chrono::nanoseconds>(end2 - start2).count() << endl;
 
-    cout << (ok ? k : n) << endl;
+    cout << ans << endl;
   }
   return 0;
 }

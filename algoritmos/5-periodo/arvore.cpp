@@ -6,11 +6,11 @@ using namespace std;
 int main() {
   int t;
   cin >> t;
+  getchar();
   for (int i = 0;i < t;i++) {
     string s;
-    cin >> s;
+    getline(cin, s);
     int n = s.size();
-    s += '$';
     
     auto start = chrono::high_resolution_clock::now();
     SuffixTree st(s);

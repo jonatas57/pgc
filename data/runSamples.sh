@@ -6,12 +6,18 @@ structs=(
   "automato"
 )
 
+MAX_ITERATIONS=10
+
 if [ -n "$1" ]; then
-  SAMPLES_DIR=("${SAMPLES_DIR[$(( $1 - 1 ))]}")
+  MAX_ITERATIONS=$1
 fi
 
 if [ -n "$2" ]; then
-  structs=("$2")
+  SAMPLES_DIR=("${SAMPLES_DIR[$(( $2 - 1 ))]}")
+fi
+
+if [ -n "$3" ]; then
+  structs=("$3")
 fi
 
 for SAMPLE_DIR in "${SAMPLES_DIR[@]}"; do
@@ -36,8 +42,12 @@ for SAMPLE_DIR in "${SAMPLES_DIR[@]}"; do
       INPUT_BASENAME=$(basename "$INPUT_FILE" .txt)
       OUTPUT_FILE_NAME="$SAMPLE_DIR/output/$STRUCT/$INPUT_BASENAME"
 
-      for i in {0..9}; do
-        $PROGRAM_FILE < "$INPUT_FILE" > /dev/null > "$OUTPUT_FILE_NAME-${i}.out" 2> "$OUTPUT_FILE_NAME-${i}.perf"
+      for i in $(seq 1 $MAX_ITERATIONS); do
+        $PROGRAM_FILE < "$INPUT_FILE" > /dev/null > "$OUTPUT_FILE_NAME-$((i - 1)).out" 2> "$OUTPUT_FILE_NAME-$((i - 1)).perf"
+        if [ $? -ne 0 ]; then
+          echo "Error running $PROGRAM_FILE with input $INPUT_FILE"
+          exit 1
+        fi
       done
 
       # perfResult=$( { gtime -v $PROGRAM_FILE < "$INPUT_FILE" > "$OUTPUT_FILE"; } 2>&1 )

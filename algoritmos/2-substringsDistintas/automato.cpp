@@ -1,20 +1,28 @@
-#include <bits/stdc++.h>
+#include <iostream>
 #include "../../estruturas/suffixAutomaton.hpp"
  
 using namespace std;
  
 long long countDistinctSubstrings(SuffixAutomaton& sa) {
-  vector<pair<int, int>> order;
-  for (int i = 0;i < sa.size;i++) order.emplace_back(sa[i].length, i);
-  sort(order.rbegin(), order.rend());
-  vector<long long> cnt(sa.size, -1);
-  for (auto& [len, at] : order) {
-    cnt[at] = 1;
-    for (auto& p : sa[at].next) {
-      cnt[at] += cnt[p.second];
+  vector<long long> dp(sa.size, -1);
+  stack<pair<int, int>> st;
+  st.emplace(0, -1);
+  while (!st.empty()) {
+    auto [at, parent] = st.top();
+    if (dp[at] == -1) {
+      dp[at] = 0;
+      for (auto& [ch, v] : sa[at].next) {
+        st.emplace(v, at);
+      }
+    }
+    else {
+      st.pop();
+      if (parent != -1) {
+        dp[parent] += dp[at] + 1;
+      }
     }
   }
-  return cnt[0] - 1;
+  return dp[0];
 }
  
 int main() {

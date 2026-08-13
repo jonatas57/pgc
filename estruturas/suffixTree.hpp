@@ -30,6 +30,11 @@ struct SuffixTree {
     for (int i = 0;s[i];i++) {
       extend(i);
     }
+    extend(s.size());
+  }
+
+  int get(int v, char c) {
+    return t[v][c];
   }
 
   void extend(int pos) {
@@ -61,6 +66,22 @@ struct SuffixTree {
         if (r - l < t[st.v].len() - st.pos) return state(st.v, st.pos + r - l);
         l += t[st.v].len() - st.pos;
         st.pos = t[st.v].len();
+      }
+    }
+    return st;
+  }
+
+  state go(state st, char c) {
+    while (true) {
+      if (st.pos == t[st.v].len()) {
+        st = state(t[st.v][c], 0);
+        if (st.v == -1) return st;
+      }
+      else {
+        if (str[t[st.v].l + st.pos] != c) return state(-1, -1);
+        if (1 < t[st.v].len() - st.pos) return state(st.v, st.pos + 1);
+        st.pos = t[st.v].len();
+        break;
       }
     }
     return st;

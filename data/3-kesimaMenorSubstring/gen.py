@@ -3,15 +3,14 @@ import random
 
 SEED = int(sys.argv[1])
 ALPHABET = sys.argv[2]
-MIN_LEN = int(sys.argv[3])
-MAX_LEN = int(sys.argv[4])
-QUERY_CNT = int(sys.argv[5])
+LENGTH = int(sys.argv[3])
+QUERY_CNT = int(sys.argv[4])
 
 def randomString(alphabet, length):
     return ''.join(random.choice(alphabet) for _ in range(length))
 
 def main():
-    sLength = random.randint(MIN_LEN, MAX_LEN)
+    sLength = LENGTH
     s = randomString(ALPHABET, sLength)
     print(s)
     mink = 1

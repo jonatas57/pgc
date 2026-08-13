@@ -3,14 +3,13 @@ import sys
 
 SEED = int(sys.argv[1])
 ALPHABET = sys.argv[2]
-MIN_LENGTH = int(sys.argv[3])
-MAX_LENGTH = int(sys.argv[4])
+LENGTH = int(sys.argv[3])
 
 def randomString(alphabet, n):
     return ''.join(random.choice(alphabet) for _ in range(n))
 
 def main():
-    sLength = random.randint(MIN_LENGTH, MAX_LENGTH)
+    sLength = LENGTH
     s = randomString(ALPHABET, sLength)
     print(s)
 

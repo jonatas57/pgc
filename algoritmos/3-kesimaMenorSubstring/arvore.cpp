@@ -26,8 +26,7 @@ vector<long long> countSubstrings(SuffixTree& st) {
   return dp;
 }
 
-string kth_substring(SuffixTree& st, int k) {
-  vector<long long> dp = countSubstrings(st);
+string kth_substring(SuffixTree& st, vector<long long>& dp, int k) {
   int at = 0;
   string ans;
   string& s = st.str;
@@ -55,7 +54,8 @@ string kth_substring(SuffixTree& st, int k) {
 int main() {
   string s;
   int q, k;
-  cin >> s >> q;
+  getline(cin, s);
+  cin >> q;
 
   auto start = chrono::high_resolution_clock::now();
   SuffixTree st(s);
@@ -65,7 +65,8 @@ int main() {
   for (int tc = 0;tc < q;tc++) {
     cin >> k;
     auto itstart = chrono::high_resolution_clock::now();
-    string ans = kth_substring(st, k);
+    auto dp = countSubstrings(st);
+    string ans = kth_substring(st, dp, k);
     auto itend = chrono::high_resolution_clock::now();
     cerr << chrono::duration_cast<chrono::nanoseconds>(itend - itstart).count() << endl;
     cout << ans << endl;

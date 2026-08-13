@@ -1,4 +1,4 @@
-#include <bits/stdc++.h>
+#include <iostream>
 #include "../../estruturas/suffixAutomaton.hpp"
 
 using namespace std;
@@ -9,15 +9,16 @@ string kthSubstring(SuffixAutomaton& sa, long long k) {
     return "";
   }
   string result;
-  while (k) {
-    k--;
-    for (auto& [ch, v] : sa.nodes[currentState].next) {
-      if (sa.countPaths(v) <= k) {
-        k -= sa.countPaths(v);
+  long long acc = 0;
+  for (int at = 0; acc < k and !sa.nodes[at].next.empty();) {
+    for (auto& [ch, v] : sa.nodes[at].next) {
+      if (acc + sa.countPaths(v) < k) {
+        acc += sa.countPaths(v);
       }
       else {
-        currentState = v;
         result += ch;
+        at = v;
+        k--;
         break;
       }
     }
@@ -28,7 +29,8 @@ string kthSubstring(SuffixAutomaton& sa, long long k) {
 int main() {
   string s;
   long long q, k;
-  cin >> s >> q;
+  getline(cin, s);
+  cin >> q;
   
   auto start = chrono::high_resolution_clock::now();
   SuffixAutomaton sa(s);

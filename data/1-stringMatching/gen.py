@@ -19,13 +19,10 @@ def main():
     for _ in range(n):
         p = random.random()
         if p < 0.5:
-            start = random.randint(0, LENGTH)
-            length = random.randint(1, min(PAT_LENGTH, sLength - start))
-            print(s[start:start+length])
+            start = random.randint(0, LENGTH - PAT_LENGTH)
+            print(s[start:start + PAT_LENGTH])
         else:
-            length = random.randint(PAT_MIN_LENGTH, PAT_MAX_LENGTH)
-            sub = randomString(ALPHABET, length)
-            print(sub)
+            print(randomString(ALPHABET, PAT_LENGTH))
 
 if __name__ == "__main__":
     random.seed(SEED)

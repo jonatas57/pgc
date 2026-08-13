@@ -7,7 +7,8 @@ using namespace std;
 
 int main() {
   string a, b;
-  cin >> a >> b;
+  getline(cin, a);
+  getline(cin, b);
   string s = a + '#' + b;
   int n = s.size();
 

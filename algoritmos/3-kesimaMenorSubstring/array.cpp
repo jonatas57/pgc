@@ -3,8 +3,8 @@
 
 using namespace std;
 
-pair<int, int> kth_substring(SuffixArray& sa, vector<int>& lcp, int k) {
-  int start, length;
+pair<int, int> kth_substring(SuffixArray& sa, vector<int>& lcp, long long k) {
+  int start = -1, length = 0;
   int n = sa.size();
   for (int i = 0;i < n;i++) {
     int cnt = n - sa[i + 1];
@@ -24,8 +24,10 @@ pair<int, int> kth_substring(SuffixArray& sa, vector<int>& lcp, int k) {
 
 int main() {
   string s;
-  int q, k;
-  cin >> s >> q;
+  int q;
+  long long k;
+  getline(cin, s);
+  cin >> q;
   auto start = chrono::high_resolution_clock::now();
   SuffixArray sa(s);
   auto end = chrono::high_resolution_clock::now();
@@ -43,7 +45,7 @@ int main() {
     auto itend = chrono::high_resolution_clock::now();
     cerr << chrono::duration_cast<chrono::nanoseconds>(itend - itstart).count() << endl;
 
-    string ans = s.substr(st, length);
+    string ans = (st == -1 ? "" : s.substr(st, length));
     cout << ans << endl;
   }
   return 0;

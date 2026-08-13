@@ -1,0 +1,68 @@
+import matplotlib.pyplot as plt
+import os
+
+pwd = os.path.dirname(os.path.abspath(__file__))
+
+sampleFolder = os.path.join(pwd, "samples")
+outputFolder = os.path.join(pwd, "output")
+
+structs = ["array", "arvore", "automato"]
+
+# sample file: in[id].txt
+sampleIds = [f.split(".")[0][2:] for f in os.listdir(sampleFolder) if f.startswith("in") and f.endswith(".txt")]
+sampleIds.sort()
+sampleCount = len(sampleIds)
+
+data = {}
+
+for struct in structs:
+    for sampleId in sampleIds:
+        for it in range(0, 5):
+            filePath = os.path.join(outputFolder, struct, f"in{sampleId}-{it}.perf")
+            if not os.path.exists(filePath):
+                print(f"File not found: {filePath}")
+                continue
+            
+            content = open(filePath, "r").read().strip().split("\n")
+
+            data.setdefault(struct, {}).setdefault(sampleId, {}).setdefault(it, {})
+            data[struct][sampleId][it]["buildTime"] = float(content[0])
+            data[struct][sampleId][it]["queryTime"] = float(content[1])
+        data[struct][sampleId]["avgBuildTime"] = sum(data[struct][sampleId][it]["buildTime"] for it in range(0, 5)) / 5
+        data[struct][sampleId]["avgQueryTime"] = sum(data[struct][sampleId][it]["queryTime"] for it in range(0, 5)) / 5
+
+def createGraphs(sampleIds, subtitle):
+    x = [int(sampleId) for sampleId in sampleIds]
+
+    plt.figure(figsize=(5, 6))
+    plt.subplot(2, 1, 1)
+    delta = -0.2
+    for struct in structs:
+        y = [data[struct][sampleId]["avgBuildTime"] / 1000000 for sampleId in sampleIds]
+        plt.bar(list(map(lambda x: x + delta, x)), y, label=struct, width=0.2)
+        delta += 0.2
+
+    plt.xticks([])
+    plt.ylabel("Tempo médio de construção (ms)")
+    plt.title("Tempo médio de construção")
+    plt.legend()
+
+    plt.subplot(2, 1, 2)
+    delta = -0.2
+    for struct in structs:
+        y = [data[struct][sampleId]["avgQueryTime"] / 1000000 for sampleId in sampleIds]
+        plt.bar(list(map(lambda x: x + delta, x)), y, label=struct, width=0.2)
+        delta += 0.2
+    plt.xticks([])
+    plt.ylabel("Tempo médio de consulta (ms)")
+    plt.title("Tempo médio de consulta")
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(pwd, f"graphs/{subtitle}.png"))
+
+def main():
+    createGraphs(sampleIds, "performance")
+
+if __name__ == "__main__":
+    main()

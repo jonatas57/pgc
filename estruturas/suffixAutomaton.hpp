@@ -10,6 +10,7 @@ struct SuffixAutomaton {
     int length = 0;
     int link = -1;
     int endpos = -1;
+    bool terminal = false;
     map<char, int> next;
 
     int& operator[](char c) {
@@ -53,6 +54,9 @@ struct SuffixAutomaton {
         }
       }
       last = current.id;
+    }
+    for (int p = last; p != -1; p = nodes[p].link) {
+      nodes[p].terminal = true;
     }
   }
 

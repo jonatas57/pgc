@@ -48,7 +48,8 @@ int lcs(string a, string b) {
 
 int main() {
   string a, b;
-  cin >> a >> b;
+  getline(cin, a);
+  getline(cin, b);
   cout << lcs(a, b) << endl;
   return 0;
 }

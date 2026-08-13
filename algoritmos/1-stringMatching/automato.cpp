@@ -1,13 +1,14 @@
-#include <bits/stdc++.h>
-#include "../../estruturas/suffixAutomaton2.hpp"
+#include <iostream>
+#include <string>
+#include "../../estruturas/suffixAutomaton.hpp"
 
 using namespace std;
 
 bool isSubstring(SuffixAutomaton& sa, string pat) {
   int at = 0;
   for (char c : pat) {
-    if (sa[at].has(c - sa.firstch)) {
-      at = sa[at][c - sa.firstch];
+    if (sa[at].has(c)) {
+      at = sa[at][c];
     }
     else return false;
   }
