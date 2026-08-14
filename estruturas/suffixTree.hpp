@@ -47,7 +47,7 @@ struct SuffixTree {
 
       int mid = split(ptr);
       int leaf = sz++;
-      t.emplace_back(pos, str.size(), mid);
+      t.emplace_back(pos, str.size() + 1, mid);
       t[mid][str[pos]] = leaf;
       ptr.v = getLink(mid);
       ptr.pos = t[ptr.v].len();

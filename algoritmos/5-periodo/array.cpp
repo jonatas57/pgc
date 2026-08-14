@@ -16,10 +16,10 @@ int main() {
 
     auto start = chrono::high_resolution_clock::now();
     SuffixArray sa(s);
+    sa.buildLCP();
     auto end = chrono::high_resolution_clock::now();
     cerr << chrono::duration_cast<chrono::nanoseconds>(end - start).count() << endl;
 
-    sa.buildLCP();
     auto& lcp = sa.lcp;
 
     auto start2 = chrono::high_resolution_clock::now();

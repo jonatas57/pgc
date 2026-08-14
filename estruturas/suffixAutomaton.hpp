@@ -1,4 +1,5 @@
 #include <map>
+#include <stack>
 #include <string>
 #include <vector>
 
@@ -81,28 +82,21 @@ struct SuffixAutomaton {
 
   long long countPaths(int u) {
     if (countStrings[u] == -1) {
-      queue<int> us;
-      us.push(u);
-      vector<int> ord;
-      vector<bool> visited(nodes.size(), false);
-      visited[u] = true;
-      while (!us.empty()) {
-        int v = us.front();
-        us.pop();
-        ord.push_back(v);
-        if (countStrings[v] == -1) {
-          for (auto& [ch, w] : nodes[v].next) {
-            if (visited[w] or countStrings[w] != -1) continue;
-            us.push(w);
-            visited[w] = true;
+      stack<pair<int, int>> st;
+      st.emplace(0, -1);
+      while (!st.empty()) {
+        auto [at, parent] = st.top();
+        if (countStrings[at] == -1) {
+          countStrings[at] = at > 0;
+          for (auto& [ch, v] : nodes[at].next) {
+            st.emplace(v, at);
           }
         }
-      }
-      for (int i = ord.size() - 1;i >= 0;i--) {
-        int v = ord[i];
-        countStrings[v] = v > 0;
-        for (auto& [ch, w] : nodes[v].next) {
-          countStrings[v] += countStrings[w];
+        else {
+          st.pop();
+          if (parent != -1) {
+            countStrings[parent] += countStrings[at];
+          }
         }
       }
     }

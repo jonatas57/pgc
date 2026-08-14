@@ -42,7 +42,38 @@ def createGraphs(sampleIds, subtitle):
         plt.plot(sampleIds, y, label=struct, marker='o', markersize=5, linewidth=2)
 
     plt.xticks(sampleIds, xticks)
-    plt.xlabel("Tamanho das strings")
+    plt.xlabel("Tamanho de $S$")
+    plt.ylabel("Tempo médio de construção (ms)")
+    plt.title("Tempo médio de construção")
+    plt.yscale("log")
+    plt.legend()
+
+    plt.subplot(2, 1, 2)
+    for struct in structs:
+        y = [data[struct][sampleId]["avgQueryTime"] / 1000000 for sampleId in sampleIds]
+        plt.plot(sampleIds, y, label=struct, marker='o', markersize=5, linewidth=2)
+    plt.xticks(sampleIds, xticks)
+    plt.xlabel("Tamanho de $S$")
+    plt.ylabel("Tempo médio de consulta (ms)")
+    plt.yscale("log")
+    plt.title("Tempo médio de consulta")
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(pwd, f"graphs/{subtitle}.png"))
+
+def createGraphsDNA(sampleIds, subtitle):
+    x = [int(sampleId) for sampleId in sampleIds]
+    xticks = [rf"$10^{i+3}$" for i in range(len(sampleIds))]
+
+    plt.figure(figsize=(5, 6))
+    plt.subplot(2, 1, 1)
+    for struct in structs:
+        y = [data[struct][sampleId]["avgBuildTime"] / 1000000 for sampleId in sampleIds]
+        plt.plot(sampleIds, y, label=struct, marker='o', markersize=5, linewidth=2)
+
+    plt.xticks(sampleIds, xticks)
+    plt.xlabel("Tamanho de strings")
     plt.ylabel("Tempo médio de construção (ms)")
     plt.title("Tempo médio de construção")
     plt.yscale("log")
@@ -72,7 +103,7 @@ def main():
     createGraphs(sampleIds[18:21], "asciiRandom")
     createGraphs(sampleIds[21:24], "asciiPartial")
     createGraphs(sampleIds[24:27], "asciiEqual")
-    createGraphs(sampleIds[27:], "dna")
+    createGraphsDNA(sampleIds[27:], "dna")
 
 if __name__ == "__main__":
     main()

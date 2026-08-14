@@ -5,37 +5,41 @@
 using namespace std;
 
 vector<long long> countSubstrings(SuffixTree& st) {
-  vector<long long> dp(st.sz);
-  queue<int> q;
-  q.push(0);
-  vector<int> ord;
+  vector<long long> dp(st.sz, -1);
+  stack<pair<int, int>> q;
+  int n = st.str.size();
+  q.emplace(0, -1);
   while (!q.empty()) {
-    int u = q.front();
-    q.pop();
-    ord.push_back(u);
-    for (auto& [ch, v] : st.t[u].next) {
-      q.push(v);
+    auto& [u, p] = q.top();
+    if (dp[u] == -1) {
+      dp[u] = 0;
+      for (auto& [ch, v] : st[u].next) {
+        q.emplace(v, u);
+      }
     }
-  }
-  for (int i = ord.size() - 1;i >= 0;i--) {
-    int u = ord[i];
-    for (auto& [ch, v] : st.t[u].next) {
-      dp[u] += dp[v] + st.t[v].len();
+    else {
+      q.pop();
+      if (p != -1) {
+        dp[p] += dp[u] + st[u].len() - (st[u].r == n + 1);
+      }
     }
   }
   return dp;
 }
 
-string kth_substring(SuffixTree& st, vector<long long>& dp, int k) {
+string kth_substring(SuffixTree& st, vector<long long>& dp, long long k) {
+  if (k > dp[0]) {
+    return "";
+  }
   int at = 0;
   string ans;
   string& s = st.str;
+  int n = s.length();
   char c;
   int v;
   while (k) {
-    for (auto& p : st.t[at].next) {
-      tie(c, v) = p;
-      long long cnt = dp[v] + st.t[v].len();
+    for (auto& [c, v] : st[at].next) {
+      long long cnt = dp[v] + st.t[v].len() - (st[v].r == n + 1);
       if (k > cnt) {
         k -= cnt;
       } else {
@@ -53,19 +57,20 @@ string kth_substring(SuffixTree& st, vector<long long>& dp, int k) {
 
 int main() {
   string s;
-  int q, k;
+  int q;
   getline(cin, s);
   cin >> q;
 
   auto start = chrono::high_resolution_clock::now();
   SuffixTree st(s);
+  auto dp = countSubstrings(st);
   auto end = chrono::high_resolution_clock::now();
   cerr << chrono::duration_cast<chrono::nanoseconds>(end - start).count() << endl;
 
+  long long k;
   for (int tc = 0;tc < q;tc++) {
     cin >> k;
     auto itstart = chrono::high_resolution_clock::now();
-    auto dp = countSubstrings(st);
     string ans = kth_substring(st, dp, k);
     auto itend = chrono::high_resolution_clock::now();
     cerr << chrono::duration_cast<chrono::nanoseconds>(itend - itstart).count() << endl;

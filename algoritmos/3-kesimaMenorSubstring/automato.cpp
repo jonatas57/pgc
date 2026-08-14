@@ -18,7 +18,7 @@ string kthSubstring(SuffixAutomaton& sa, long long k) {
       else {
         result += ch;
         at = v;
-        k--;
+        acc++;
         break;
       }
     }
