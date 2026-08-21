@@ -2,6 +2,8 @@
 #include "../../estruturas/suffixArray.hpp"
  
 using namespace std;
+
+const double EPS = 1e-7;
  
 int countOcurrences(SuffixArray& arr, const string& pattern) {
   int n = arr.size();
@@ -75,32 +77,45 @@ int main() {
   int g = countOcurrences(arr, "g");
   int t = countOcurrences(arr, "t");
 
-  vector<string> trios = {"aaa", "aac", "aag", "aat", "aca", "acc", "acg", "act",
-                          "aga", "agc", "agg", "agt", "ata", "atc", "atg", "att",
-                          "caa", "cac", "cag", "cat", "cca", "ccc", "ccg", "cct",
-                          "cga", "cgc", "cgg", "cgt", "cta", "ctc", "ctg", "ctt",
-                          "gaa", "gac", "gag", "gat", "gca", "gcc", "gcg", "gct",
-                          "gga", "ggc", "ggg", "ggt", "gta", "gtc", "gtg", "gtt",
-                          "taa", "tac", "tag", "tat", "tca", "tcc", "tcg", "tct",
-                          "tga", "tgc", "tgg", "tgt", "tta", "ttc", "ttg", "ttt"};
+  vector<string> octos;
+  string bases = "acgt";
+  for (int i = 0; i < (1 << 16);i++) {
+    string octo;
+    for (int j = 3, k = 0; k < 8;k++, j <<= 2) {
+      int x = (i & j) >> (k * 2);
+      octo += bases[x];
+    }
+    octos.push_back(octo);
+  }
 
-  vector<int> trioCounts(64, 0);
-  for (int i = 0; i < trios.size(); i++) {
-    trioCounts[i] = countOcurrences(arr, trios[i]);
+  vector<int> octoCounts(octos.size(), 0);
+  for (int i = 0; i < octos.size(); i++) {
+    octoCounts[i] = countOcurrences(arr, octos[i]);
   }
   auto end2 = chrono::high_resolution_clock::now();
   cerr << chrono::duration_cast<chrono::nanoseconds>(end2 - start2).count() << endl;
 
+  vector<pair<string, double>> results;
   double fa = (double)a / s.size(), fc = (double)c / s.size(), fg = (double)g / s.size(), ft = (double)t / s.size();
-  for (int i = 0; i < trios.size(); i++) {
+  for (int i = 0; i < octos.size(); i++) {
     double expected = 1.0;
-    for (char c : trios[i]) {
+    for (char c : octos[i]) {
       if (c == 'a') expected *= fa;
       else if (c == 'c') expected *= fc;
       else if (c == 'g') expected *= fg;
       else if (c == 't') expected *= ft;
     }
-    cout << trios[i] << " " << (double)trioCounts[i] / (s.size() - 2) << " " << expected << endl;
+    // cout << octos[i] << " " << (double)octoCounts[i] / (s.size() - 2) << " " << expected << endl;
+    results.emplace_back(octos[i], (double)octoCounts[i] / (s.size() - 2));
+  }
+  sort(results.begin(), results.end(), [](const pair<string, double>& a, const pair<string, double>& b) {
+    if (abs(a.second - b.second) < EPS) {
+      return a.first < b.first;
+    }
+    return a.second > b.second;
+  });
+  for (int i = 0;i < 10;i++) {
+    cout << results[i].first << " " << results[i].second << endl;
   }
   return 0;
 }

@@ -64,16 +64,15 @@ def createGraphs(sampleIds, subtitle):
 
 def createGraphsDNA(sampleIds, subtitle):
     x = [int(sampleId) for sampleId in sampleIds]
-    xticks = [rf"$10^{i+3}$" for i in range(len(sampleIds))]
+    xticks = ["MS2", "Qbeta", "phiX174", "G4", "M13", "If1", "T7", "P22", "lambda", "T4"]
 
-    plt.figure(figsize=(5, 6))
+    plt.figure(figsize=(7, 6))
     plt.subplot(2, 1, 1)
     for struct in structs:
         y = [data[struct][sampleId]["avgBuildTime"] / 1000000 for sampleId in sampleIds]
         plt.plot(sampleIds, y, label=struct, marker='o', markersize=5, linewidth=2)
 
     plt.xticks(sampleIds, xticks)
-    plt.xlabel("Tamanho de strings")
     plt.ylabel("Tempo médio de construção (ms)")
     plt.title("Tempo médio de construção")
     plt.yscale("log")
@@ -84,7 +83,6 @@ def createGraphsDNA(sampleIds, subtitle):
         y = [data[struct][sampleId]["avgQueryTime"] / 1000000 for sampleId in sampleIds]
         plt.plot(sampleIds, y, label=struct, marker='o', markersize=5, linewidth=2)
     plt.xticks(sampleIds, xticks)
-    plt.xlabel("Tamanho das strings")
     plt.ylabel("Tempo médio de consulta (ms)")
     plt.yscale("log")
     plt.title("Tempo médio de consulta")

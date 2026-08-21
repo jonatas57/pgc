@@ -42,35 +42,38 @@ int main() {
   int g = counts[sa[0]['g']];
   int t = counts[sa[0]['t']];
 
-  vector<string> trios = {"aaa", "aac", "aag", "aat", "aca", "acc", "acg", "act",
-                            "aga", "agc", "agg", "agt", "ata", "atc", "atg", "att",
-                            "caa", "cac", "cag", "cat", "cca", "ccc", "ccg", "cct",
-                            "cga", "cgc", "cgg", "cgt", "cta", "ctc", "ctg", "ctt",
-                            "gaa", "gac", "gag", "gat", "gca", "gcc", "gcg", "gct",
-                            "gga", "ggc", "ggg", "ggt", "gta", "gtc", "gtg", "gtt",
-                            "taa", "tac", "tag", "tat", "tca", "tcc", "tcg", "tct",
-                            "tga", "tgc", "tgg", "tgt","tta","ttc","ttg","ttt"};
-
-  vector<long long> trioCounts(64, 0);
-  for (int i = 0; i < trios.size(); i++) {
-    int at = 0;
-    for (char c : trios[i]) {
-      at = sa[at][c];
+  vector<string> octos;
+  string bases = "acgt";
+  for (int i = 0; i < (1 << 16);i++) {
+    string octo;
+    for (int j = 3, k = 0; k < 8;k++, j <<= 2) {
+      int x = (i & j) >> (k * 2);
+      octo += bases[x];
     }
-    trioCounts[i] = counts[at];
+    octos.push_back(octo);
+  }
+
+  vector<long long> octoCounts(octos.size(), 0);
+  for (int i = 0; i < octos.size(); i++) {
+    int at = 0;
+    for (char c : octos[i]) {
+      at = sa[at][c];
+      if (at == 0) break;
+    }
+    octoCounts[i] = at == 0 ? 0 : counts[at];
   }
   auto end2 = chrono::high_resolution_clock::now();
   cerr << chrono::duration_cast<chrono::nanoseconds>(end2 - start2).count() << endl;
 
   double fa = (double)a / dna.size(), fc = (double)c / dna.size(), fg = (double)g / dna.size(), ft = (double)t / dna.size();
-  for (int i = 0; i < trios.size(); i++) {
+  for (int i = 0; i < octos.size(); i++) {
     double expected = 1.0;
-    for (char c : trios[i]) {
+    for (char c : octos[i]) {
       if (c == 'a') expected *= fa;
       else if (c == 'c') expected *= fc;
       else if (c == 'g') expected *= fg;
       else if (c == 't') expected *= ft;
     }
-    cout << trios[i] << " " << (double)trioCounts[i] / (dna.size() - 2) << " " << expected << endl;
+    cout << octos[i] << " " << (double)octoCounts[i] / (dna.size() - 2) << " " << expected << endl;
   }
 }

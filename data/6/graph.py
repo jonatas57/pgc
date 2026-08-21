@@ -26,43 +26,43 @@ for struct in structs:
             content = open(filePath, "r").read().strip().split("\n")
 
             data.setdefault(struct, {}).setdefault(sampleId, {}).setdefault(it, {})
-            data[struct][sampleId][it]["buildTime"] = float(content[0])
-            data[struct][sampleId][it]["queryTime"] = float(content[1])
+            data[struct][sampleId][it]["buildTime"] = int(content[0])
+            data[struct][sampleId][it]["queryTime"] = int(content[1])
         data[struct][sampleId]["avgBuildTime"] = sum(data[struct][sampleId][it]["buildTime"] for it in range(0, 5)) / 5
         data[struct][sampleId]["avgQueryTime"] = sum(data[struct][sampleId][it]["queryTime"] for it in range(0, 5)) / 5
 
 def createGraphs(sampleIds, subtitle):
-    x = [int(sampleId) for sampleId in sampleIds]
+    x = [i for i in range(len(sampleIds))]
+    xticks = ["MS2", "Qbeta", "phiX174", "G4", "M13", "If1", "T7", "P22", "lambda", "T4", "E. coli"]
 
     plt.figure(figsize=(5, 6))
     plt.subplot(2, 1, 1)
-    delta = -0.2
     for struct in structs:
         y = [data[struct][sampleId]["avgBuildTime"] / 1000000 for sampleId in sampleIds]
-        plt.bar(list(map(lambda x: x + delta, x)), y, label=struct, width=0.2)
-        delta += 0.2
+        plt.plot(x, y, label=struct, marker='o', markersize=5, linewidth=2)
 
-    plt.xticks([])
+    plt.xticks(x, xticks, rotation=45)
     plt.ylabel("Tempo médio de construção (ms)")
     plt.title("Tempo médio de construção")
+    plt.yscale("log")
     plt.legend()
 
     plt.subplot(2, 1, 2)
-    delta = -0.2
     for struct in structs:
         y = [data[struct][sampleId]["avgQueryTime"] / 1000000 for sampleId in sampleIds]
-        plt.bar(list(map(lambda x: x + delta, x)), y, label=struct, width=0.2)
-        delta += 0.2
-    plt.xticks([])
+        plt.plot(x, y, label=struct, marker='o', markersize=5, linewidth=2)
+    plt.xticks(x, xticks, rotation=45)
     plt.ylabel("Tempo médio de consulta (ms)")
     plt.title("Tempo médio de consulta")
+    plt.yscale("log")
     plt.legend()
 
     plt.tight_layout()
     plt.savefig(os.path.join(pwd, f"graphs/{subtitle}.png"))
 
 def main():
-    createGraphs(sampleIds, "performance")
+    samples = [sampleIds[i] for i in [6, 4, 1, 3, 2, 5, 9, 8, 10, 7, 0]]
+    createGraphs(samples, "performance")
 
 if __name__ == "__main__":
     main()
