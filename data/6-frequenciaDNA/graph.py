@@ -61,8 +61,7 @@ def createGraphs(sampleIds, subtitle):
     plt.savefig(os.path.join(pwd, f"graphs/{subtitle}.png"))
 
 def main():
-    samples = [sampleIds[i] for i in [6, 4, 1, 3, 2, 5, 9, 8, 10, 7, 0]]
-    createGraphs(samples, "performance")
+    createGraphs(sampleIds, "performance")
 
 if __name__ == "__main__":
     main()
